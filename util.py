@@ -45,3 +45,6 @@ def slerp(t, v0, v1, DOT_THRESHOLD=0.9995):
         v2 = from_numpy(v2).to(input_device)
 
     return v2
+
+def toPil(arr):
+    return Image.fromarray(np.uint8(arr)).convert('RGB')

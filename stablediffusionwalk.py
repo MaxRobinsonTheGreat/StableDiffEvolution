@@ -18,20 +18,21 @@ import util
 def run(
         # --------------------------------------
         # args you probably want to change
-        prompt = "a top-down view of a yellow slime mold spreading and growing on a flat black empty surface, 8k uhd photograph", # prompt to dream about
-        num_ims = 1,
+        prompt = "Galaxies, stars, and the blackness of deep space. 8k UHD intricately detailed astronomical photograph. Beautiful exquisite color and high color contrast, realistic.", # prompt to dream about
+        negative_prompt="glitchy, ugly, deformed, uncanny, malformed, disfigured",
+        num_ims = 4,
         gpu = 0, # id of the gpu to run on
-        name = 'slimemold2', # name of this project, for the output directory
+        name = 'astronomy', # name of this project, for the output directory
         rootdir = './walks',
-        seeds = [325, 785, 621, 325],
+        seeds = [325, 785, 621],
         num_steps = 400, # number of steps between each pair of sampled points
-        num_inference_steps = 100, # more (e.g. 100, 200 etc) can create slightly better images
+        num_inference_steps = 50, # more (e.g. 100, 200 etc) can create slightly better images
         guidance_scale = 7.5, # can depend on the prompt. usually somewhere between 3-10 is good
         # --------------------------------------
         # args you probably don't want to change
         width = 512,
-        height = 768,
-        weights_path = "CompVis/stable-diffusion-v1-4",
+        height = 512,
+        weights_path = "runwayml/stable-diffusion-v1-5",
         # --------------------------------------
     ):
     assert torch.cuda.is_available()
@@ -60,6 +61,7 @@ def run(
 
     # iterate the loop
     prompt = [prompt]*num_ims
+    negative_prompt = [negative_prompt]*num_ims
     frame_index = 0
     for seed in seeds[1:]:
         end = torch.randn(
@@ -74,13 +76,14 @@ def run(
             with autocast("cuda"):
                 images = pipe(
                     prompt,
+                    negative_prompt=negative_prompt,
                     num_inference_steps=num_inference_steps,
                     latents=init,
                     guidance_scale=guidance_scale,
                     width=width, 
                     height=height
-                )["sample"]
-            grid_image = util.image_grid(images, 1, 1)
+                )["images"]
+            grid_image = util.image_grid(images, 2, 2)
             outpath = os.path.join(outdir, 'frame%06d.png' % frame_index)
             grid_image.save(outpath)
             frame_index += 1

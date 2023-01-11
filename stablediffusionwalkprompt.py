@@ -14,13 +14,16 @@ import numpy as np
 import torch
 from torch import autocast
 from torchvision.utils import make_grid
+import util
 
 # -----------------------------------------------------------------------------
+
 
 @torch.no_grad()
 def diffuse(
         pipe,
         cond_embeddings, # text conditioning, should be (1, 77, 768)
+        negative_prompt,
         cond_latents,    # image conditioning, should be (1, 4, 64, 64)
         num_inference_steps,
         guidance_scale,
@@ -30,7 +33,7 @@ def diffuse(
 
     # classifier guidance: add the unconditional embedding
     max_length = cond_embeddings.shape[1] # 77
-    uncond_input = pipe.tokenizer([""], padding="max_length", max_length=max_length, return_tensors="pt")
+    uncond_input = pipe.tokenizer([negative_prompt], padding="max_length", max_length=max_length, return_tensors="pt")
     uncond_embeddings = pipe.text_encoder(uncond_input.input_ids.to(torch_device))[0]
     text_embeddings = torch.cat([uncond_embeddings, cond_embeddings])
 
@@ -88,47 +91,21 @@ def diffuse(
 
     return image
 
-def slerp(t, v0, v1, DOT_THRESHOLD=0.9995):
-    """ helper function to spherically interpolate two arrays v1 v2 """
-
-    if not isinstance(v0, np.ndarray):
-        inputs_are_torch = True
-        input_device = v0.device
-        v0 = v0.cpu().numpy()
-        v1 = v1.cpu().numpy()
-
-    dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
-    if np.abs(dot) > DOT_THRESHOLD:
-        v2 = (1 - t) * v0 + t * v1
-    else:
-        theta_0 = np.arccos(dot)
-        sin_theta_0 = np.sin(theta_0)
-        theta_t = theta_0 * t
-        sin_theta_t = np.sin(theta_t)
-        s0 = np.sin(theta_0 - theta_t) / sin_theta_0
-        s1 = sin_theta_t / sin_theta_0
-        v2 = s0 * v0 + s1 * v1
-
-    if inputs_are_torch:
-        v2 = torch.from_numpy(v2).to(input_device)
-
-    return v2
-
 def main(
         # --------------------------------------
         # args you probably want to change
         prompts = [
-            "a beautiful intricately detailed masterpiece painting hanging on a wall in an simple frame, 8k photograph", 
-            "a photograph of nature hanging on a wall in an simple frame, beautiful intricately detailed masterpiece"
+            "Front-facing full portrait of a normal person's face. Plain background. Male, "+str(age)+" years old, wearing a t shirt. Full color 8k UHD photograph, beautiful colorful professional photography." for age in range(10, 90, 10)
         ], # prompts to dream about
-        seeds=[259, 86],
+        seeds=[275 for _ in range(10, 90, 10)],
+        negative_prompt="Deformed, disfigured, ugly, mutilated, uncanny, gross, glitchy, creepy",
         gpu = 0, # id of the gpu to run on
-        name = 'painting2photograph', # name of this project, for the output directory
+        name = 'age', # name of this project, for the output directory
         rootdir = './dreams',
         num_steps = 100,  # number of steps between each pair of sampled points
         # --------------------------------------
         # args you probably don't want to change
-        num_inference_steps = 100,
+        num_inference_steps = 50,
         guidance_scale = 7.5,
         eta = 0.0,
         width = 512,
@@ -144,14 +121,27 @@ def main(
     os.makedirs(outdir, exist_ok=True)
 
     # # init all of the models and move them to a given GPU
-    pipe = StableDiffusionPipeline.from_pretrained("CompVis/stable-diffusion-v1-4", use_auth_token=True)
+    pipe = StableDiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-2", use_auth_token=True)
     torch_device = f"cuda:{gpu}"
     pipe.unet.to(torch_device)
     pipe.vae.to(torch_device)
     pipe.text_encoder.to(torch_device)
 
+    # negative prompt embeddings
+    uncond_input = pipe.tokenizer(
+        [negative_prompt],
+        padding="max_length",
+        max_length=pipe.tokenizer.model_max_length,
+        truncation=True,
+        return_tensors="pt",
+    )
+    uncond_embeddings = pipe.text_encoder(
+        uncond_input.input_ids.to("cuda"),
+    )[0].detach()
+
     # get the conditional text embeddings based on the prompts
     prompt_embeddings = []
+
     for prompt in prompts:   
         text_input = pipe.tokenizer(
             prompt,
@@ -163,6 +153,7 @@ def main(
         with torch.no_grad():
             embed = pipe.text_encoder(text_input.input_ids.to(torch_device))[0]
 
+        text_embeddings = torch.cat([uncond_embeddings, embed])
         prompt_embeddings.append(embed)
     
     # Take first embed and set it as starting point, leaving rest as list we'll loop over.
@@ -188,11 +179,11 @@ def main(
         for i, t in enumerate(np.linspace(0, 1, num_steps)):
             print("dreaming... ", frame_index)
 
-            cond_embedding = slerp(float(t), prompt_embedding_a, prompt_embedding_b)
-            init = slerp(float(t), init_a, init_b)
+            cond_embedding = util.slerp(float(t), prompt_embedding_a, prompt_embedding_b)
+            init = util.slerp(float(t), init_a, init_b)
 
             with autocast("cuda"):
-                image = diffuse(pipe, cond_embedding, init, num_inference_steps, guidance_scale, eta)
+                image = diffuse(pipe, cond_embedding, negative_prompt, init, num_inference_steps, guidance_scale, eta)
 
             im = Image.fromarray(image)
             outpath = os.path.join(outdir, 'frame%06d.jpg' % frame_index)
