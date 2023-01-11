@@ -9,10 +9,10 @@ project_name = "test"
 prompt = "A balloon animal"
 neg_prompt = 'ugly, deformed, gross, mutilated, extra limbs, extra fingers'
 start_image = 'kid.jpg'
-num_outpaints = 2
+num_outpaints = 10
 height = 512
 window_size = 512
-slide_size = 512 // 2
+slide_size = 128
 
 proj_dir = "./outpaints/"+project_name
 os.makedirs(proj_dir, exist_ok=True)

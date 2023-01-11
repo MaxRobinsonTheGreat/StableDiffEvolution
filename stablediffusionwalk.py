@@ -20,18 +20,18 @@ def run(
         # args you probably want to change
         prompt = "Galaxies, stars, and the blackness of deep space. 8k UHD intricately detailed astronomical photograph. Beautiful exquisite color and high color contrast, realistic.", # prompt to dream about
         negative_prompt="glitchy, ugly, deformed, uncanny, malformed, disfigured",
-        num_ims = 4,
+        num_ims = 1,
         gpu = 0, # id of the gpu to run on
         name = 'astronomy', # name of this project, for the output directory
         rootdir = './walks',
-        seeds = [325, 785, 621],
-        num_steps = 400, # number of steps between each pair of sampled points
+        seeds = [325, 785],
+        num_steps = 100, # number of steps between each pair of sampled points
         num_inference_steps = 50, # more (e.g. 100, 200 etc) can create slightly better images
         guidance_scale = 7.5, # can depend on the prompt. usually somewhere between 3-10 is good
         # --------------------------------------
         # args you probably don't want to change
-        width = 512,
-        height = 512,
+        width = 1536,
+        height = 1024,
         weights_path = "runwayml/stable-diffusion-v1-5",
         # --------------------------------------
     ):
@@ -46,11 +46,8 @@ def run(
     outdir = os.path.join(rootdir, name)
     os.makedirs(outdir, exist_ok=True)
 
-    tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14")
-
-    # init all of the models and move them to a given GPU
-    lms = LMSDiscreteScheduler(beta_start=0.00085, beta_end=0.012, beta_schedule="scaled_linear")
-    pipe = StableDiffusionPipeline.from_pretrained(weights_path, tokenizer=tokenizer, scheduler=lms, use_auth_token=True).to(torch_device)
+    pipe = StableDiffusionPipeline.from_pretrained(weights_path).to(torch_device)
+    pipe.enable_attention_slicing()
     util.disableNSFWFilter(pipe)
 
     start = torch.randn(
@@ -83,7 +80,7 @@ def run(
                     width=width, 
                     height=height
                 )["images"]
-            grid_image = util.image_grid(images, 2, 2)
+            grid_image = util.image_grid(images, 1, 1)
             outpath = os.path.join(outdir, 'frame%06d.png' % frame_index)
             grid_image.save(outpath)
             frame_index += 1
