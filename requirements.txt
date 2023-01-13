@@ -1,9 +1,10 @@
-diffusers==0.3.0
+diffusers==0.10.2
 einops==0.4.1
 fire==0.4.0
-numpy==1.22.3
-Pillow==9.3.0
-torch==1.11.0+cu113
+matplotlib==3.5.1
+numpy==1.23.3
+Pillow==9.4.0
+torch==1.13.0
 torchvision==0.12.0+cu113
 tqdm==4.63.1
-transformers==4.22.1
+transformers==4.19.2
