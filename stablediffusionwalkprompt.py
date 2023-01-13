@@ -95,12 +95,13 @@ def main(
         # --------------------------------------
         # args you probably want to change
         prompts = [
-            "Front-facing full portrait of a normal person's face. Plain background. Male, "+str(age)+" years old, wearing a t shirt. Full color 8k UHD photograph, beautiful colorful professional photography." for age in range(10, 90, 10)
+            "A vast ocean with distant islands and ships. Oil painting on canvas. extremely beautiful, dark and ominous, exquisite detail and form, high color contrast, ethereal",
+            "An ornate medieval castle on a mountain range with sheer cliffsides and overhangs. Oil painting on canvas. Extremely beautiful with intricate detail, dark and ominous, exquisite detail and form, high color contrast, ethereal"
         ], # prompts to dream about
-        seeds=[275 for _ in range(10, 90, 10)],
-        negative_prompt="Deformed, disfigured, ugly, mutilated, uncanny, gross, glitchy, creepy",
+        seeds=[634, 587],
+        negative_prompt="Deformed, disfigured, ugly, mutilated, gross, glitchy, frame, borders",
         gpu = 0, # id of the gpu to run on
-        name = 'age', # name of this project, for the output directory
+        name = 'ocean-castle', # name of this project, for the output directory
         rootdir = './dreams',
         num_steps = 100,  # number of steps between each pair of sampled points
         # --------------------------------------
@@ -108,8 +109,8 @@ def main(
         num_inference_steps = 50,
         guidance_scale = 7.5,
         eta = 0.0,
-        width = 512,
-        height = 512,
+        width = 1536,
+        height = 1024,
         # --------------------------------------
 ):
     assert len(prompts) == len(seeds)
@@ -121,7 +122,8 @@ def main(
     os.makedirs(outdir, exist_ok=True)
 
     # # init all of the models and move them to a given GPU
-    pipe = StableDiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-2", use_auth_token=True)
+    pipe = StableDiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-2")
+    pipe.enable_attention_slicing()
     torch_device = f"cuda:{gpu}"
     pipe.unet.to(torch_device)
     pipe.vae.to(torch_device)
