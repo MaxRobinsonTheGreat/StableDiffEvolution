@@ -8,15 +8,14 @@ import os
 import util
 
 num=1
-seed=257 #random.randint(10)
-prompt="Galaxies, stars, and the blackness of deep space. 8k UHD intricately detailed astronomical photograph. Beautiful exquisite color and high color contrast, realistic."
-negative_prompt="glitchy, ugly, deformed, uncanny, malformed, disfigured"
+seed=935 #random.randint(10)
+prompt="A vast ocean with tiny distant islands and ships. Oil painting on canvas. Extremely beautiful sunset, exquisite detail and color, high color contrast, ethereal. "
+negative_prompt="Deformed, disfigured, ugly, mutilated, gross, glitchy, frame, borders, messy, duplicate suns"
 width=1536
 height=1024
 num_inference_steps=50
 model_id="runwayml/stable-diffusion-v1-5"
-# stabilityai/stable-diffusion-2
-# runwayml/stable-diffusion-v1-5
+# model_id="stabilityai/stable-diffusion-2"
 
 sample_key = "images"
 
