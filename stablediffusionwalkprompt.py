@@ -95,13 +95,19 @@ def main(
         # --------------------------------------
         # args you probably want to change
         prompts = [
-            "A vast ocean with tiny distant islands and ships. Oil painting on canvas. Extremely beautiful sunset, exquisite detail and color, high color contrast, ethereal. ",
-            "An expansive mountain range with snow-capped peaks. Masterpiece oil painting on canvas. Extremely beautiful."
-        ], # prompts to dream about
-        seeds=[634, 587],
-        negative_prompt="Deformed, disfigured, ugly, mutilated, gross, glitchy, frame, borders, messy",
+            # "A vast ocean with tiny distant islands and ships. Oil painting on canvas. Extremely beautiful sunset, exquisite detail and color, high color contrast, ethereal. ",
+            "An expansive mountain range with snow-capped peaks. Masterpiece oil painting on canvas. Extremely beautiful.",
+            "The ruins of an ornate ancient black ziggurat temple and obelisks under a blood red sky. Masterpiece oil painting on canvas. Somber and ominous, exquisite detail and stark color, high color contrast. Intricate detail and fine detail.",
+        ],
+        seeds=[
+            # 634,
+            587,
+            320
+        ],
+        negative_prompt="Disfigured, ugly, mutilated, gross, glitchy, frame, borders, messy, disorganized, flyng, hovering, floating",
+        # negative_prompt="Deformed, disfigured, ugly, mutilated, gross, glitchy, frame, borders, messy",
         gpu = 0, # id of the gpu to run on
-        name = 'ocean-castle', # name of this project, for the output directory
+        name = 'mountain', # name of this project, for the output directory
         rootdir = './dreams',
         num_steps = 200,  # number of steps between each pair of sampled points
         # --------------------------------------
