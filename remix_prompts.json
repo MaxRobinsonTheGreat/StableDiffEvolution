@@ -1,37 +1,37 @@
-[
+[    
     {
-        "seed" : 123,
-        "prompt" : "A top down perspective of hands holding all of human creativity, art, and culture. Intricate detailed Aztec calendar stone carving sculpture, exquisite detail and color, perfect composition",
+        "seed" : 164,
+        "prompt" : "A top down perspective of hands holding a round masterpiece Landscape oil painting on canvas by Monet, with trees, a lake, and sky, exquisite intricate detail and bright color, perfect composition",
         "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized",
         "num_frames" : 40,
-        "strength" : 0.4
+        "strength" : 0.45
     },
     {
-        "seed" : 375,
-        "prompt" : "A top down perspective of hands holding all of human creativity, art, and culture. Colorful Japanese woodblock print by Hokosai, exquisite detail and color, perfect composition",
+        "seed" : 398,
+        "prompt" : "A top down perspective of hands holding all of human creativity, art, and culture. Intricate detailed Aztec stone carving sculpture of a the face of a single aztec god, exquisite detail and color, perfect composition",
         "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized",
         "num_frames" : 40,
-        "strength" : 0.4
+        "strength" : 0.45
     },
     {
-        "seed" : 312,
-        "prompt" : "A top down perspective of hands holding all of human creativity, art, and culture. Landscape oil painting on canvas by Monet, exquisite detail and color, perfect composition",
+        "seed" : 258,
+        "prompt" : "A top down perspective of hands holding a round colorful Japanese woodblock print by Hokosai, with castles, trees, and mountains, exquisite fine detail and color, perfect composition",
         "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized",
         "num_frames" : 40,
-        "strength" : 0.4
+        "strength" : 0.45
     },
     {
-        "seed" : 4,
-        "prompt" : "A top down perspective of hands holding all of human creativity, art, and culture. Chinese blue and white porcelain art, late Ming dynasty, exquisite detail and color, perfect composition",
-        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized",
+        "seed" : 43,
+        "prompt" : "A top down perspective of hands holding a round piece of chinese blue and white porcelain art, late Ming dynasty, showing an intricately detailed model of the neurological brain, sharp exquisite intricate detail and color, perfect composition",
+        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized, blurry",
         "num_frames" : 40,
-        "strength" : 0.4
+        "strength" : 0.45
     },
     {
-        "seed" : 5,
-        "prompt" : "A top down perspective of hands holding all of human creativity, art, and culture. Oil painting of a starry night sky by Vincent van Gogh, exquisite detail and color, perfect composition",
-        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized",
+        "seed" : 53,
+        "prompt" : "A top down perspective of hands holding a round oil painting of a swirling starry night sky by Vincent van Gogh, exquisite detail and color, perfect composition",
+        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized, duplicate",
         "num_frames" : 40,
-        "strength" : 0.4
+        "strength" : 0.5
     }
 ]

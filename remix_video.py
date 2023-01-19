@@ -8,7 +8,7 @@ proj_name = 'chaotic'
 video_file = './chaotic_ending.mp4'
 model = "runwayml/stable-diffusion-v1-5"
 frame_step = 3
-image_size = (768, 512)
+image_size = (1536, 1024)
 
 prompt_file = './remix_prompts.json'
 device = "cuda"
@@ -17,10 +17,11 @@ os.makedirs(proj_dir, exist_ok=True)
 
 cap = cv2.VideoCapture(video_file) # says we capture an image from a webcam
 
-pipe = StableDiffusionImg2ImgPipeline.from_pretrained(model, torch_dtype=torch.float16, use_auth_token=True).to(
+pipe = StableDiffusionImg2ImgPipeline.from_pretrained(model, torch_dtype=torch.float16).to(
     device
 )
 pipe = pipe.to(device)
+pipe.enable_attention_slicing()
 disableNSFWFilter(pipe)
 
 config = None
@@ -46,7 +47,7 @@ while(cap.isOpened()):
         init_img = Image.fromarray(converted)
         init_img = init_img.resize(image_size)
 
-        init_img = init_img.resize((768, 512))
+        init_img = init_img.resize(image_size)
 
         prompt = cur_config['prompt']
         negative_prompt = cur_config['neg_prompt']
