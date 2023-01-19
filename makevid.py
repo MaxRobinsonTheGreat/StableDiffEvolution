@@ -1,6 +1,7 @@
 import os
 import sys
 
-projname = sys.argv[1]
+projdir = sys.argv[1]
+projname = projdir.split('/')[-1]
 
-os.system("ffmpeg -framerate 15 -pattern_type glob -i './dreams/{}/*.jpg' ./dreams/{}/_{}.mp4".format(projname, projname, projname))
+os.system("ffmpeg -framerate 20 -pattern_type glob -i './{}/*.png' ./{}/_{}.mp4".format(projdir, projdir, projname))

@@ -133,6 +133,8 @@ walks/
 evolution/
 upscale/
 outpaints/
+remixes/
+test.py
 *.mp4
 *.png
 *.jpg

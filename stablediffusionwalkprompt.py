@@ -194,7 +194,7 @@ def main(
                 image = diffuse(pipe, cond_embedding, negative_prompt, init, num_inference_steps, guidance_scale, eta)
 
             im = Image.fromarray(image)
-            outpath = os.path.join(outdir, 'frame%06d.jpg' % frame_index)
+            outpath = os.path.join(outdir, 'frame%06d.png' % frame_index)
             im.save(outpath)
             frame_index += 1
 
