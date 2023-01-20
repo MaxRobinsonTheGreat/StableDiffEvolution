@@ -65,7 +65,7 @@ while(cap.isOpened()):
         prompt_frame_count+=1
 
         num_frames = cur_config['num_frames']
-        if prompt_frame_count>num_frames:
+        if prompt_frame_count>=num_frames:
             prompt_count+=1
             if prompt_count < len(config):
                 cur_config = config[prompt_count]
