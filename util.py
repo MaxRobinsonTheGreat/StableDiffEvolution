@@ -46,5 +46,16 @@ def slerp(t, v0, v1, DOT_THRESHOLD=0.9995):
 
     return v2
 
+
 def toPil(arr):
     return Image.fromarray(np.uint8(arr)).convert('RGB')
+
+
+def cropToCenter(im, new_size):
+    width, height = im.size
+    new_width, new_height = new_size
+    left = (width - new_width)/2
+    top = (height - new_height)/2
+    right = (width + new_width)/2
+    bottom = (height + new_height)/2
+    return im.crop((left, top, right, bottom))

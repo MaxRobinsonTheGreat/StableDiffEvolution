@@ -4,15 +4,15 @@ import numpy as np
 from diffusers import StableDiffusionInpaintPipeline
 import os, json, util
 
-project_name = "cyberpunk"
-prompt_file = "./outpaint_prompt.json"
-start_image = 'cyberpunk.png'
+project_name = "image_space"
+start_image = 'image_space.png'
 height = 512
 window_size = 512
 slide_size = 128
 num_options = 4
 used_prompts = []
 
+prompt_file = "./outpaint_prompt.json"
 proj_dir = "./outpaints/"+project_name
 os.makedirs(proj_dir, exist_ok=True)
 

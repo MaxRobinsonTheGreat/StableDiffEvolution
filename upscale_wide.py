@@ -1,6 +1,4 @@
 import torch
-from torch import autocast
-from tqdm.auto import tqdm
 from util import toPil
 import numpy as np
 import os, json
