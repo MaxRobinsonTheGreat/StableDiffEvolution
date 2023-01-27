@@ -4,13 +4,13 @@ from PIL import Image
 from diffusers import StableDiffusionInpaintPipeline
 from util import toPil, cropToCenter
 
-project_name = "test"
-prompt = "dimly lit dingy office hallways, creepy and ominous, nightmarish, horror photography"
-negative_prompt = "ugly, deformed, gross, mutilated, messy, disorganized, frame, border, text, watermark, signature"
+project_name = "space"
+prompt = "nebula clouds, stars, and deep space. 8k digital astronomical photography unreal engine render. Dark and ominous, intricate fine focused detail, bright beautiful exquisite color, high color contrast"
+negative_prompt = "watermark, ugly, messy, disorganized, text, frame, border, margin, glitchy, incoherent, mutilated, deformed"
 zoom_speed = 64
 num_outpaints = 50
 num_filler_frames = 16
-start_image = './kid.jpg'
+start_image = './sample.png'
 model = "stabilityai/stable-diffusion-2-inpainting"
 
 image_size = (512, 512)
@@ -65,8 +65,6 @@ for outpaints in range(num_outpaints):
         for filler_count in reversed(range(num_filler_frames)): #+1 to include the first frame
             step = round((filler_count * size_step))
             inner_size = (image_size[0]-step, image_size[1]-step)
-
-            print('step', step, 'inner', inner_size)
 
             if inner_size != image_size:
                 filler_frame = cropToCenter(out_image, inner_size)

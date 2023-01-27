@@ -32,9 +32,7 @@ frame_count = 0
 while(cap.isOpened()):
     ret,cv2_im = cap.read()
     converted = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
-
     init_img = Image.fromarray(converted)
-
     init_img = init_img.resize(lowres_size)
 
     torch.manual_seed(seed)

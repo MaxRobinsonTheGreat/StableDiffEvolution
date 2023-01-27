@@ -18,21 +18,19 @@ import util
 def run(
         # --------------------------------------
         # args you probably want to change
-        prompt = "Galaxies, stars, and the blackness of deep space. 8k UHD intricately detailed astronomical photograph. Beautiful exquisite color and high color contrast, realistic.", # prompt to dream about
-        negative_prompt="glitchy, ugly, deformed, uncanny, malformed, disfigured",
+        prompt = "the landscape of an alien world made of mushrooms and fungus, 4k digital art illustration, science fiction concept art, extremely beautiful, dark and ominous, creepy, exquisite color and detail", # prompt to dream about
+        negative_prompt="glitchy, ugly, disorganized, messy, watermark",
         num_ims = 1,
         gpu = 0, # id of the gpu to run on
-        name = 'astronomy', # name of this project, for the output directory
+        name = 'fungus_world', # name of this project, for the output directory
         rootdir = './walks',
         seeds = [325, 785],
         num_steps = 100, # number of steps between each pair of sampled points
         num_inference_steps = 50, # more (e.g. 100, 200 etc) can create slightly better images
         guidance_scale = 7.5, # can depend on the prompt. usually somewhere between 3-10 is good
-        # --------------------------------------
-        # args you probably don't want to change
-        width = 1536,
-        height = 1024,
-        weights_path = "runwayml/stable-diffusion-v1-5",
+        width = 768,
+        height = 512,
+        weights_path = "stabilityai/stable-diffusion-2-1",
         # --------------------------------------
     ):
     assert torch.cuda.is_available()
@@ -70,16 +68,16 @@ def run(
             init = util.slerp(float(t), start, end)
 
             print("dreaming... ", frame_index)
-            with autocast("cuda"):
-                images = pipe(
-                    prompt,
-                    negative_prompt=negative_prompt,
-                    num_inference_steps=num_inference_steps,
-                    latents=init,
-                    guidance_scale=guidance_scale,
-                    width=width, 
-                    height=height
-                )["images"]
+            # with autocast("cuda"):
+            images = pipe(
+                prompt,
+                negative_prompt=negative_prompt,
+                num_inference_steps=num_inference_steps,
+                latents=init,
+                guidance_scale=guidance_scale,
+                width=width, 
+                height=height
+            )["images"]
             grid_image = util.image_grid(images, 1, 1)
             outpath = os.path.join(outdir, 'frame%06d.png' % frame_index)
             grid_image.save(outpath)
