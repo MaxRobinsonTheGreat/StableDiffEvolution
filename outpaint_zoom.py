@@ -4,14 +4,16 @@ from PIL import Image
 from diffusers import StableDiffusionInpaintPipeline
 from util import toPil, cropToCenter
 
-project_name = "space"
-prompt = "nebula clouds, stars, and deep space. 8k digital astronomical photography unreal engine render. Dark and ominous, intricate fine focused detail, bright beautiful exquisite color, high color contrast"
-negative_prompt = "watermark, ugly, messy, disorganized, text, frame, border, margin, glitchy, incoherent, mutilated, deformed"
+project_name = "space3"
+prompt = "nebula, stars, and deep space. 8k digital astronomical render. Dark and ominous yet beautiful, intricate fine focused detail, bright beautiful exquisite color, high color contrast"
+negative_prompt = "watermark, text, frame, wall, room, poster, edge, picture, website, software, boundary"
 zoom_speed = 64
-num_outpaints = 50
-num_filler_frames = 16
+num_outpaints = 75
+num_filler_frames = 32
 start_image = './sample.png'
-model = "stabilityai/stable-diffusion-2-inpainting"
+# model = "stabilityai/stable-diffusion-2-inpainting"
+model = "runwayml/stable-diffusion-inpainting"
+
 
 image_size = (512, 512)
 proj_dir = "./zooms/"+project_name
@@ -33,6 +35,7 @@ mask_image = toPil(mask_image)
 mask_image.save(proj_dir+'/mask.png')
 
 cur_image = Image.open(start_image)
+cur_image = cur_image.resize(image_size)
 
 pipe = StableDiffusionInpaintPipeline.from_pretrained(
     model,
@@ -50,6 +53,7 @@ for outpaints in range(num_outpaints):
 
     # torch.manual_seed(seed)
     while True:
+        print("Outpaint", outpaints)
         out_image = pipe(prompt=prompt, negative_prompt=negative_prompt, image=in_image, mask_image=mask_image).images[0]
         out_image.paste(downsized_image, (zoom_speed, zoom_speed))
         out_image.save(proj_dir+'/choice.png')
