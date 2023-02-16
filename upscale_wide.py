@@ -11,8 +11,6 @@ from PIL import Image
 proj_name = "cyberpunk"
 image_path = "./outpaints/cyberpunk/full.png"
 prompt_file = "./outpaint_prompt.json"
-prompt = "Cyberpunk Innovative futuristic Japanese city at night, hazy and foggy, octane render, professional ominous concept art, an intricate, elegant, highly detailed digital painting, concept art, smooth, sharp focus, illustration, volumetric lighting"
-negative_prompt = "Deformed, disfigured, mutilated, gross, glitchy, messy, disorganized, watermark"
 full_chunk_size = 512
 lowres_chunk_size = 256
 resize_ratio = full_chunk_size//lowres_chunk_size
