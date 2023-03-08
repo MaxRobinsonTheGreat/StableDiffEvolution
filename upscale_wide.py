@@ -10,7 +10,7 @@ from PIL import Image
 
 proj_name = "cyberpunk"
 image_path = "./outpaints/cyberpunk/full.png"
-prompt_file = "./outpaint_prompt.json"
+prompt_file = "./upscale_prompt.json"
 full_chunk_size = 512
 lowres_chunk_size = 256
 resize_ratio = full_chunk_size//lowres_chunk_size
