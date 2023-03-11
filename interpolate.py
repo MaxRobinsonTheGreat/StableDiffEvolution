@@ -18,19 +18,20 @@ import util
 def run(
         # --------------------------------------
         # args you probably want to change
-        prompt = "the landscape of an alien world made of mushrooms and fungus, 4k digital art illustration, science fiction concept art, extremely beautiful, dark and ominous, creepy, exquisite color and detail", # prompt to dream about
-        negative_prompt="glitchy, ugly, disorganized, messy, watermark",
+        prompt = "A creative original artwork", # prompt to dream about
+        negative_prompt="watermark, signature, mutilated, deformed, disfigured, ugly, messy, disorganized, face",
         num_ims = 1,
         gpu = 0, # id of the gpu to run on
-        name = 'fungus_world', # name of this project, for the output directory
+        name = 'artwork', # name of this project, for the output directory
         rootdir = './walks',
-        seeds = [325, 785],
-        num_steps = 100, # number of steps between each pair of sampled points
+        seeds = [66, 785],
+        num_steps = 400, # number of steps between each pair of sampled points
         num_inference_steps = 50, # more (e.g. 100, 200 etc) can create slightly better images
         guidance_scale = 7.5, # can depend on the prompt. usually somewhere between 3-10 is good
-        width = 768,
+        width = 512,
         height = 512,
-        weights_path = "stabilityai/stable-diffusion-2-1",
+        # weights_path = "stabilityai/stable-diffusion-2-1",
+        weights_path = "runwayml/stable-diffusion-v1-5",
         # --------------------------------------
     ):
     assert torch.cuda.is_available()

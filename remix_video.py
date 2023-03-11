@@ -3,23 +3,26 @@ import torch, cv2, os, json
 from diffusers import StableDiffusionImg2ImgPipeline
 from PIL import Image
 from util import disableNSFWFilter
+import random
 
-proj_name = 'chaotic'
-video_file = './chaotic_ending.mp4'
+proj_name = 'superman'
+video_file = './spiderman_orig.gif'
 model = "runwayml/stable-diffusion-v1-5"
-frame_step = 3
-image_size = (1536, 1024)
+frame_step = 1
+image_size = (512, 512)
 
 prompt_file = './remix_prompts.json'
 device = "cuda"
 proj_dir = './remixes/'+proj_name
 os.makedirs(proj_dir, exist_ok=True)
 
-cap = cv2.VideoCapture(video_file) # says we capture an image from a webcam
+cap = cv2.VideoCapture(video_file)
 
 pipe = StableDiffusionImg2ImgPipeline.from_pretrained(model, torch_dtype=torch.float16).to(
     device
 )
+print(pipe.scheduler.compatibles, pipe.scheduler)
+# pipe.scheduler = scheduler.from_config(pipe.scheduler.config)
 pipe = pipe.to(device)
 pipe.enable_attention_slicing()
 disableNSFWFilter(pipe)
@@ -47,12 +50,12 @@ while(cap.isOpened()):
         init_img = Image.fromarray(converted)
         init_img = init_img.resize(image_size)
 
-        init_img = init_img.resize(image_size)
-
         prompt = cur_config['prompt']
         negative_prompt = cur_config['neg_prompt']
         strength = cur_config['strength']
-        seed = cur_config['seed']
+        seed = random.randint(0, 1000)
+        if 'seed' in cur_config:
+            seed = cur_config['seed']
 
         generator = torch.Generator(device=device).manual_seed(seed)
 

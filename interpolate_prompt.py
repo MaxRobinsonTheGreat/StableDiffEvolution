@@ -96,28 +96,28 @@ def main(
         # args you probably want to change
         prompts = [
             # "A vast ocean with tiny distant islands and ships. Oil painting on canvas. Extremely beautiful sunset, exquisite detail and color, high color contrast, ethereal. ",
-            # "An expansive mountain range with snow-capped peaks. Masterpiece oil painting on canvas. Extremely beautiful.",
-            "The ruins of an ornate ancient black ziggurat temple and obelisks under a blood red sky. Masterpiece oil painting on canvas. Somber and ominous, exquisite detail and stark color, high color contrast. Intricate detail and fine detail.",
-            "A beautiful futuristic solarpunk city skyline on a ocean shore with plants and glass buildings. Digital oil painting illustration. Organized, minimal exquisite detail, beautiful color"
+            "A beautiful evolutionary ecosystem, minimal precise clear detail",
+            "A beautiful evolutionary ecosystem, minimal precise clear detail, a few feathered dinosaurs, late jurassic",
         ],
         seeds=[
             # 634,
-            # 587,
-            320,
-            978
+            888,
+            697
         ],
-        negative_prompt="Disfigured, ugly, mutilated, gross, glitchy, frame, borders, messy, disorganized, flyng, hovering, floating",
+        negative_prompt="watermark, mutilated, deformed, disfigured, ugly, extra limbs, missing limbs",
         # negative_prompt="Deformed, disfigured, ugly, mutilated, gross, glitchy, frame, borders, messy",
         gpu = 0, # id of the gpu to run on
-        name = 'ruins_city', # name of this project, for the output directory
+        name = 'evolution_large', # name of this project, for the output directory
         rootdir = './dreams',
-        num_steps = 200,  # number of steps between each pair of sampled points
+        num_steps = 3,  # number of steps between each pair of sampled points
+        # model = "runwayml/stable-diffusion-v1-5",
+        model = "stabilityai/stable-diffusion-2-1",
         # --------------------------------------
         # args you probably don't want to change
         num_inference_steps = 50,
         guidance_scale = 7.5,
         eta = 0.0,
-        width = 1536,
+        width = 1024,
         height = 1024,
         # --------------------------------------
 ):
@@ -130,7 +130,7 @@ def main(
     os.makedirs(outdir, exist_ok=True)
 
     # # init all of the models and move them to a given GPU
-    pipe = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")
+    pipe = StableDiffusionPipeline.from_pretrained(model)
     pipe.enable_attention_slicing()
     torch_device = f"cuda:{gpu}"
     pipe.unet.to(torch_device)
@@ -192,8 +192,7 @@ def main(
             cond_embedding = util.slerp(float(t), prompt_embedding_a, prompt_embedding_b)
             init = util.slerp(float(t), init_a, init_b)
 
-            with autocast("cuda"):
-                image = diffuse(pipe, cond_embedding, negative_prompt, init, num_inference_steps, guidance_scale, eta)
+            image = diffuse(pipe, cond_embedding, negative_prompt, init, num_inference_steps, guidance_scale, eta)
 
             im = Image.fromarray(image)
             outpath = os.path.join(outdir, 'frame%06d.png' % frame_index)

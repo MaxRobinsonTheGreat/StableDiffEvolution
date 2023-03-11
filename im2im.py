@@ -14,15 +14,16 @@ pipe = StableDiffusionImg2ImgPipeline.from_pretrained(model_path, torch_dtype=to
     device
 )
 pipe = pipe.to(device)
+pipe.enable_attention_slicing()
 
-prompt = ["A top down perspective of hands holding all of diverse collective human culture and art. Landscape oil painting on canvas by Monet, insanely detailed, exquisite detail and color, perfect composition"]*4
-negative_prompt = ["ugly, gross, mutilated, deformed, disfigured, messy, disorganized"]*4
+prompt = ["The inner neurological mind, intricate precise clear detail"]
+negative_prompt = ["face, person, blurry"]
 
-init_img = Image.open('./0_0.png').convert("RGB")
-init_img = init_img.resize((768, 512))
+init_img = Image.open('./space_test.png').convert("RGB")
+init_img = init_img.resize((1024, 1024))
 
-generator = torch.Generator(device=device).manual_seed(4321)
+generator = torch.Generator(device=device).manual_seed(3625)
 # with autocast("cuda"):
-images = pipe(prompt=prompt, negative_prompt=negative_prompt, image=[init_img]*4, strength=0.5, num_inference_steps=50, guidance_scale=7.5, generator=generator).images
-image = util.image_grid(images, 2, 2)
+images = pipe(prompt=prompt, negative_prompt=negative_prompt, image=[init_img], strength=0.7, num_inference_steps=50, guidance_scale=8, generator=generator).images
+image = util.image_grid(images, 1, 1)
 image.save('./test.png')

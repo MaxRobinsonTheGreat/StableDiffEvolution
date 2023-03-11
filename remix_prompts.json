@@ -1,30 +1,9 @@
 [    
     {
-        "seed" : 93,
-        "prompt" : "A top down perspective of hands holding a round masterpiece Landscape oil painting on canvas by Monet, with trees, a lake, people, and sky, exquisite intricate detail and bright color, perfect composition",
-        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized",
-        "num_frames" : 50,
-        "strength" : 0.45
-    },
-    {
-        "seed" : 96,
-        "prompt" : "A top down perspective of hands holding a round colorful Japanese woodblock print by Hokosai, with castles, landscapes, and mountains, exquisite fine detail and color, perfect composition",
-        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized",
-        "num_frames" : 50,
-        "strength" : 0.45
-    },
-    {
-        "seed" : 1,
-        "prompt" : "A top down perspective of hands holding a round piece of chinese blue and white porcelain ceramic art, late Ming dynasty, showing an intricately detailed model of the brain and neural networks, sharp and intricately detailed, exquisite detail and color, perfect composition",
-        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized, blurry",
-        "num_frames" : 50,
-        "strength" : 0.45
-    },
-    {
-        "seed" : 399,
-        "prompt" : "A top down perspective holding a round oil painting of a swirling starry night sky with bright yellow stars and a moon by Vincent van Gogh, exquisite detail and color, perfect composition",
-        "neg_prompt" : "ugly, gross, mutilated, deformed, disfigured, messy, disorganized, duplicate",
-        "num_frames" : 50,
-        "strength" : 0.45
+        "seed": 3625,
+        "prompt" : "Superman dancing on a white background, stylized animation, clear detail",
+        "neg_prompt" : "deformed, disfigured, mutilated, deformed, ugly, messy, disorganized",
+        "num_frames" : 1000,
+        "strength" : 0.4
     }
 ]
