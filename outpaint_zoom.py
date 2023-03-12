@@ -1,15 +1,13 @@
-import torch, cv2, os
+import torch, cv2, os, json
 import numpy as np
 from PIL import Image
 from diffusers import StableDiffusionInpaintPipeline
-from util import toPil, cropToCenter, image_grid, disableNSFWFilter
+from util import toPil, image_grid, disableNSFWFilter
 
-project_name = "neurons"
-prompt = "Many flashing biological neurons on a black background"
-negative_prompt = "watermark, text, frame, border, edge"
-zoom_speed = 64
-num_outpaints = 10
-num_filler_frames = 32
+project_name = "atoms"
+zoom_speed = 128
+num_outpaints = 1000
+
 start_image = './sample.png'
 choices = 4
 # model = "stabilityai/stable-diffusion-2-inpainting"
@@ -17,6 +15,8 @@ model = "runwayml/stable-diffusion-inpainting"
 
 
 image_size = (512, 512)
+used_prompts = []
+prompt_file = "./outpaint_prompt.json"
 proj_dir = "./zooms/"+project_name
 frames_dir = proj_dir+"/frames"
 os.makedirs(frames_dir, exist_ok=True)
@@ -46,6 +46,8 @@ pipe = StableDiffusionInpaintPipeline.from_pretrained(
 disableNSFWFilter(pipe)
 
 frame_count = 0
+cur_image.save(os.path.join(frames_dir, '%06d.png' % frame_count))
+
 for outpaints in range(num_outpaints):
     cur_image.save(os.path.join(proj_dir, 'in.png'))
 
@@ -55,6 +57,10 @@ for outpaints in range(num_outpaints):
 
     while True:
         print("Outpaint", outpaints)
+        with open(prompt_file) as json_file:
+            prompts = json.load(json_file)
+            prompt = prompts['prompt']
+            negative_prompt = prompts['negative_prompt']
         out_images = pipe(prompt=[prompt]*choices, negative_prompt=[negative_prompt]*choices, image=[in_image]*choices, mask_image=mask_image).images
 
         for im in out_images:
@@ -75,31 +81,9 @@ for outpaints in range(num_outpaints):
                 if choice>=0 and choice<choices:
                     out_image=out_images[choice]
                     break
+    frame_count += 1
+    out_image.save(os.path.join(frames_dir, '%06d.png' % frame_count))
     out_image.save(os.path.join(proj_dir, 'out.png'))
 
-    if num_filler_frames > 0:
-        size_step = 2 * zoom_speed / (num_filler_frames)
-
-        for filler_count in reversed(range(num_filler_frames)): #+1 to include the first frame
-            step = round((filler_count * size_step))
-            inner_size = (image_size[0]-step, image_size[1]-step)
-
-            if inner_size != image_size:
-                filler_frame = cropToCenter(out_image, inner_size)
-                filler_frame = filler_frame.resize(image_size)
-            else:
-                filler_frame = out_image
-
-            if filler_count == 0:
-                filler_frame.save(os.path.join(proj_dir, 'end.png'))
-            if filler_count == num_filler_frames:
-                filler_frame.save(os.path.join(proj_dir, 'start.png'))
-
-
-            filler_frame.save(os.path.join(frames_dir, '%06d.png' % frame_count))
-            frame_count += 1
-    else:
-        out_image.save(os.path.join(frames_dir, '%06d.png' % frame_count))
-        frame_count += 1
     cur_image = out_image
     

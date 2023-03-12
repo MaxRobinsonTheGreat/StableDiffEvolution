@@ -51,7 +51,7 @@ for i in range(num_sub_ims):
             prompt = prompts['prompt']
             negative_prompt = prompts['negative_prompt']
         upscaled = pipe(prompt=prompt, negative_prompt=negative_prompt, image=img).images[0]
-        upscaled.save(proj_dir+'/'+str(i)+'.png')
+        upscaled.save(os.path.join(proj_dir, '%06d.png' % i))
 
         if i == 0:
             temp_full_upscaled = np.array(upscaled)
