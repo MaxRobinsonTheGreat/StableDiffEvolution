@@ -4,13 +4,17 @@ import numpy as np
 from diffusers import StableDiffusionInpaintPipeline
 import os, json, util
 
-project_name = "ai_museum_right_start"
-start_image = 'outpaints/ai_museum_right_2/ai_museum_right_start.png'
-height = 512
+LEFT=0
+RIGHT=1
+UP=2
+DOWN=3
+
+project_name = "down_test"
+start_image = 'museum_office.png'
 window_size = 512
 slide_size = 128
 num_options = 4
-right = False
+direction = UP
 model = "stabilityai/stable-diffusion-2-inpainting"
 # model = "runwayml/stable-diffusion-inpainting"
 
@@ -27,36 +31,54 @@ pipe = StableDiffusionInpaintPipeline.from_pretrained(
 
 util.disableNSFWFilter(pipe)
 
-mask = np.ones((height, window_size))
-if right:
+mask = np.ones((window_size, window_size))
+if direction == RIGHT:
     mask[:,0:slide_size] = 0
-else:
+elif direction == LEFT:
     mask[:,-slide_size:] = 0
+elif direction == UP:
+    mask[-slide_size:,:] = 0
+elif direction == DOWN:
+    mask[0:slide_size,:] = 0
 
 mask_image = Image.fromarray(np.uint8(mask*255)).convert('RGB')
 mask_image.save(proj_dir+'/mask.png')
 
 cur_image = Image.open(start_image)
-resize_ratio = cur_image.height/height
-resize_width = int(cur_image.width//resize_ratio)
-cur_image = cur_image.resize((resize_width, height))
-full_image = cur_image.copy()
-print(resize_width-window_size)
-if right:
-    cur_image = np.array(cur_image)[:,resize_width-window_size:]
+if direction == RIGHT or direction == LEFT:
+    resize_ratio = cur_image.height/window_size
+    resize_width = int(cur_image.width//resize_ratio)
+    cur_image = cur_image.resize((resize_width, window_size))
 else:
+    resize_ratio = cur_image.width/window_size
+    resize_height = int(cur_image.height//resize_ratio)
+    cur_image = cur_image.resize((window_size, resize_height))
+
+full_image = cur_image.copy()
+
+if direction == RIGHT:
+    cur_image = np.array(cur_image)[:,resize_width-window_size:]
+elif direction == LEFT:
     cur_image = np.array(cur_image)[:,:window_size]
-print(cur_image.shape)
+elif direction == UP:
+    cur_image = np.array(cur_image)[:window_size,:]
+elif direction == DOWN:
+    cur_image = np.array(cur_image)[resize_width-window_size:,:]
+
 cur_image = util.toPil(cur_image)
 i=0
 while True:
     im = np.array(cur_image)
     start = im.shape[1]-slide_size
-    next_im = np.zeros((height, window_size, 3))
-    if right:
+    next_im = np.zeros((window_size, window_size, 3))
+    if direction == RIGHT:
         next_im[:,0:slide_size] = im[:,start:]
-    else:
-        next_im[:,-slide_size:] = im[:,0:slide_size]
+    elif direction == LEFT:
+        next_im[:,-slide_size:] = im[:slide_size,:]
+    elif direction == UP:
+        next_im[-slide_size:,:] = im[:slide_size,:]
+    elif direction == DOWN:
+        next_im[0:slide_size,:] = im[start:,:]
     next_im = Image.fromarray(np.uint8(next_im)).convert('RGB')
     next_im.save(proj_dir+'/'+str(i)+'.png')
     
@@ -95,10 +117,14 @@ while True:
     cur_image.save(proj_dir+'/'+str(i)+'.png')
     
     im = np.array(cur_image)
-    if right:
+    if direction == RIGHT:
         full_image = np.append(full_image, im[:,slide_size:], 1)
-    else:
+    elif direction == LEFT:
         full_image = np.append(im[:,:-slide_size], full_image, 1)
+    elif direction == UP:
+        full_image = np.append(im[:-slide_size,:], full_image, 0)
+    elif direction == DOWN:
+        full_image = np.append(full_image, im[slide_size:,:], 0)
     full_image = Image.fromarray(np.uint8(full_image)).convert('RGB')
     full_image.save(proj_dir+'/full.png')
 
